@@ -7,8 +7,8 @@ def about_view(request):
 def home_view(request):
     return HttpResponse("Here will be blog structure ")
 
-def article_detail_view(request):
-    return HttpResponse("New")
+def article_detail_view(request: HttpRequest, article: str) -> HttpResponse:
+    return HttpResponse(f" Default article - {article}")
 
 def article_comment(request: HttpRequest, article: str) -> HttpResponse:
     return HttpResponse(f"Comment to article - {article}")
