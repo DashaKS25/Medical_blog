@@ -15,24 +15,30 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
+from django.urls import path, include, re_path
 from .import views
 
 urlpatterns = [
-    path('about/', views.about_view),
     path('', views.home_view),
+    path('about/', views.about_view),
+    path('create/', views.create_form_article),
+
     path('<article>/article/', views.article_detail_view),
     path('<article>/comment/', views.article_comment),
-    path('create/', views.create_form_article),
     path('<article>/update/', views.update_article),
     path('<article>/delete/', views.delete_article),
+
     path('topics/', views.topics_view),
     path('topics/<topic>/subscribe/', views.topic_subscribe),
     path('topics/<topic>/unsubscribe/', views.topic_unsubscribe),
+
     path('profile/<str:username>/', views.profile_username),
     path('set-password/', views.set_password),
     path('set-userdata/', views.set_userdata),
     path('deactivate/', views.deactivate_profile),
     path('register/', views.register_profile),
     path('login/', views.login_profile),
-    path('logout/', views.logout_profile)
+    path('logout/', views.logout_profile),
+
+    re_path(r'archive\/\d{4}\/[01]?\d{1}\/', views.regex),
 ]

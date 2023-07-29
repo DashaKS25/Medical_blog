@@ -1,4 +1,5 @@
 from django.http import HttpRequest, HttpResponse
+from django.urls import path, include, re_path
 
 
 def about_view(request):
@@ -51,4 +52,7 @@ def login_profile(request):
 
 def logout_profile(request):
     return HttpResponse("Logout")
+
+def regex(request):
+    return HttpResponse("its regex")
 
