@@ -23,7 +23,6 @@ urlpatterns = [
     path('about/', views.about_view),
     path('create/', views.create_form_article),
 
-    path('<article>/article/', views.article_detail_view),
     path('<article>/comment/', views.article_comment),
     path('<article>/update/', views.update_article),
     path('<article>/delete/', views.delete_article),
@@ -41,4 +40,5 @@ urlpatterns = [
     path('logout/', views.logout_profile),
 
     re_path(r'archive\/\d{4}\/[01]?\d{1}\/', views.regex),
+    path('<article>/', views.article_detail_view),
 ]
