@@ -7,7 +7,7 @@ UserModel = get_user_model()
 class Topic(models.Model):
     title = models.CharField(max_length=64, unique=True)
     description = models.CharField(max_length=255)
-    users = models.ManyToManyField(UserModel)
+    users = models.ManyToManyField(UserModel, through='UserTopicRelationship')
 
     def __str__(self):
         return self.title
@@ -30,7 +30,7 @@ class Comment(models.Model):
     author= models.ForeignKey(UserModel, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Comment by {self.user.username} on {self.article.title}"
+        return f"Comment by {self.author.username} on {self.article.title}"
 
 class UserTopicRelationship(models.Model):
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
