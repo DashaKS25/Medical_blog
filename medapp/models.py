@@ -7,6 +7,7 @@ UserModel = get_user_model()
 class Topic(models.Model):
     title = models.CharField(max_length=64, unique=True)
     description = models.CharField(max_length=255)
+    users = models.ManyToManyField(UserModel)
 
     def __str__(self):
         return self.title
@@ -26,7 +27,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     message = models.TextField()
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    author= models.ForeignKey(UserModel, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Comment by {self.user.username} on {self.article.title}"
@@ -34,5 +35,4 @@ class Comment(models.Model):
 class UserTopicRelationship(models.Model):
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
-    prefer = models.BooleanField(default=False)
     notify = models.BooleanField(default=False)
