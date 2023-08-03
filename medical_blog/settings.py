@@ -77,9 +77,9 @@ WSGI_APPLICATION = 'medical_blog.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'meddb',
-        'USER': 'med',
-        'PASSWORD':'password',
+        'NAME': 'med2',
+        'USER': 'mmed',
+        'PASSWORD':'123',
         'HOST': 'localhost',
         'PORT': '5432',
     }
