@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
+
+
 UserModel = get_user_model()
 
 class Topic(models.Model):
@@ -11,6 +13,7 @@ class Topic(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class Article(models.Model):
     title = models.CharField(max_length=255, default='default_title')
@@ -31,6 +34,10 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.author.username} on {self.article.title}"
+
+        class Meta:
+        ordering = ['-created_at']
+        fields = ['message', 'article', 'author']
 
 class UserTopicRelationship(models.Model):
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
