@@ -32,12 +32,14 @@ class Comment(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     author= models.ForeignKey(UserModel, on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = ['-created_at']
+    
+
     def __str__(self):
         return f"Comment by {self.author.username} on {self.article.title}"
 
-        class Meta:
-        ordering = ['-created_at']
-        fields = ['message', 'article', 'author']
+        
 
 class UserTopicRelationship(models.Model):
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE)

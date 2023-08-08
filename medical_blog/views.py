@@ -3,6 +3,7 @@ from django.urls import path, include, re_path
 from medapp.models import Article, Comment, Topic, UserModel, UserTopicRelationship
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, Http404
+from medapp.services import sorted_articles_view
 
 
 
@@ -15,11 +16,9 @@ def home_view(request):
 def article_detail_view(request, article):
     article = get_object_or_404(Article, title=article)
     comments = article.comment_set.all()
-    
     article_data = f"Title: {article.title}\nContent: {article.content}\n\nComments:\n"
     for comment in comments:
         article_data += f"- {comment.message}\n"
-    
     return HttpResponse(article_data, content_type='text/plain')
 
 def article_comment(request: HttpRequest, article: str) -> HttpResponse:
@@ -66,16 +65,14 @@ def regex(request):
 
 def article_list(request):
     articles = Article.objects.all()
-
     article_data = ""
     for article in articles:
         article_data += f"Title: {article.title}\nContent: {article.content}\n\nComments:\n"
-
         comments = Comment.objects.filter(article=article)
-        for comment in comments:
+    for comment in comments:
             article_data += f"- {comment.message}\n"
 
-        article_data += "\n"
+    article_data += "\n"
 
     return HttpResponse(article_data, content_type='text/plain')
 
@@ -89,22 +86,3 @@ def user_profile(request, username):
     except UserModel.DoesNotExist:
         raise Http404('There is no such user.')
 
-def sorted_articles_view(request, username):
-    sort_by = request.GET.get('sort_by', 'title') 
-    valid_sort_options = ['title', 'date']
-    if sort_by not in valid_sort_options:
-        raise Http404('Invalid sorting parameter')
-
-    
-    articles = Article.objects.filter(author__username=username)
-    if sort_by == 'title':
-        sorted_articles = articles.order_by('title')
-    elif sort_by == 'date':
-        sorted_articles = articles.order_by('-created_at')  
-    else:
-        sorted_articles = None  
-    if sorted_articles is not None:
-        article_titles = '\n'.join(article.title for article in sorted_articles)
-        return HttpResponse(article_titles, content_type='text/plain')
-    else:
-        raise Http404('User not found')
