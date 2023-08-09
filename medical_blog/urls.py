@@ -26,13 +26,13 @@ urlpatterns = [
     path('create/', views.create_form_article),
     path('list/', views.article_list),
 
-    path('<article>/comment/', views.article_comment),
-    path('<article>/update/', views.update_article),
-    path('<article>/delete/', views.delete_article),
+    path('<str:article>/comment/', views.article_comment),
+    path('<str:article>/update/', views.update_article),
+    path('<str:article>/delete/', views.delete_article),
 
     path('topics/', views.topics_view),
-    path('topics/<topic>/subscribe/', views.topic_subscribe),
-    path('topics/<topic>/unsubscribe/', views.topic_unsubscribe),
+    path('topics/<str:topic>/subscribe/', views.topic_subscribe),
+    path('topics/<str:topic>/unsubscribe/', views.topic_unsubscribe),
 
     path('preferred_articles/<int:user_id>/', views.preferred_articles, name='preferred_articles'),
     path('profile/<str:username>/', views.user_profile, name='user_profile'),
