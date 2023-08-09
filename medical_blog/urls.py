@@ -34,7 +34,7 @@ urlpatterns = [
     path('topics/<topic>/subscribe/', views.topic_subscribe),
     path('topics/<topic>/unsubscribe/', views.topic_unsubscribe),
 
-    path('sorted-articles/<str:username>/', views.sorted_articles_view, name='sorted_articles'),
+    path('preferred_articles/<int:user_id>/', views.preferred_articles, name='preferred_articles'),
     path('profile/<str:username>/', views.user_profile, name='user_profile'),
     path('set-password/', views.set_password),
     path('set-userdata/', views.set_userdata),
@@ -45,5 +45,5 @@ urlpatterns = [
 
     re_path(r'archive\/\d{4}\/[01]?\d{1}\/', views.regex),
 
-    path('article/<str:article>/', views.article_detail_view, name='article_detail'),
+    path('<article_title>/', views.article_detail_view),
 ]

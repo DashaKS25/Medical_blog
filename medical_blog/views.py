@@ -3,7 +3,7 @@ from django.urls import path, include, re_path
 from medapp.models import Article, Comment, Topic, UserModel, UserTopicRelationship
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, Http404
-from medapp.services import sorted_articles_view
+from medapp.services import get_sorted_articles
 
 
 
@@ -13,25 +13,43 @@ def about_view(request):
 def home_view(request):
     return HttpResponse("Here will be blog structure ")
 
-def article_detail_view(request, article):
-    article = get_object_or_404(Article, title=article)
-    comments = article.comment_set.all()
-    article_data = f"Title: {article.title}\nContent: {article.content}\n\nComments:\n"
-    for comment in comments:
-        article_data += f"- {comment.message}\n"
-    return HttpResponse(article_data, content_type='text/plain')
+def article_detail_view(request, article_title):
+    try:
+        cur_article = get_object_or_404(Article, title=article_title)
+        comments = Comment.objects.filter(article=cur_article)
 
-def article_comment(request: HttpRequest, article: str) -> HttpResponse:
-    return HttpResponse(f"Comment to article - {article}")
+        article_data = f'TITLE: {cur_article.title}\n\nCONTENT: {cur_article.content}\n\nCOMMENTS:\n'
+        for comment in comments:
+            article_data += f'- {comment.message}\n'
+
+        return HttpResponse(article_data, content_type='text/plain')
+
+    except Article.DoesNotExist:
+        raise Http404('There is no such article.')
+
+def article_comment(request, article):
+    try:
+        Article.objects.get(title=article)  # Check if the article exists
+        return HttpResponse(f"Comment to article - {article}")
+    except Article.DoesNotExist:
+        raise Http404('There is no such article.')
 
 def create_form_article(request):
     return HttpResponse(f"Block_1,Block_2")
 
-def update_article(request: HttpRequest, article: str) -> HttpResponse:
-    return HttpResponse(f"Update to article - {article}")
+def update_article(request, article):
+    try:
+        Article.objects.get(title=article)  # Check if the article exists
+        return HttpResponse(f"Update to article - {article}")
+    except Article.DoesNotExist:
+        raise Http404('There is no such article.')
 
-def delete_article(request: HttpRequest, article: str) -> HttpResponse:
-    return HttpResponse(f"Delete to article - {article}")
+def delete_article(request, article):
+    try:
+        Article.objects.get(title=article)  # Check if the article exists
+        return HttpResponse(f"Delete to article - {article}")
+    except Article.DoesNotExist:
+        raise Http404('There is no such article.')
 
 def topics_view(request):
     return HttpResponse("My topics")
@@ -64,17 +82,22 @@ def regex(request):
     return HttpResponse("its regex")
 
 def article_list(request):
-    articles = Article.objects.all()
-    article_data = ""
-    for article in articles:
-        article_data += f"Title: {article.title}\nContent: {article.content}\n\nComments:\n"
-        comments = Comment.objects.filter(article=article)
-    for comment in comments:
-            article_data += f"- {comment.message}\n"
+    try:
+        articles = Article.objects.all()
+        article_data = ""
+        for article in articles:
+            article_data += f"Title: {article.title}\nContent: {article.content}\n\nComments:\n"
+            comments = Comment.objects.filter(article=article)
+            for comment in comments:
+                article_data += f"- {comment.message}\n"
 
-    article_data += "\n"
+            article_data += "\n"
 
-    return HttpResponse(article_data, content_type='text/plain')
+        return HttpResponse(article_data, content_type='text/plain')
+        
+    except Article.DoesNotExist:
+        raise Http404('There is no such article.')
+
 
 def user_profile(request, username):
     try:
@@ -86,3 +109,16 @@ def user_profile(request, username):
     except UserModel.DoesNotExist:
         raise Http404('There is no such user.')
 
+def preferred_articles(request, user_id):
+    try:
+        user = UserModel.objects.get(id=user_id)
+        sorted_articles_list = get_sorted_articles(user_id)
+
+        article_data = "Preferred Articles:\n\n"
+        for article in sorted_articles_list:
+            article_data += f"Title: {article.title}\nContent: {article.content}\nCommon Topics: {article.prefer_topics}\n\n"
+
+        return HttpResponse(article_data, content_type='text/plain')
+
+    except UserModel.DoesNotExist:
+        raise Http404('User does not exist')
