@@ -4,6 +4,7 @@ from medapp.models import Article, Comment, Topic, UserModel, UserTopicRelations
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, Http404
 from medapp.services import get_sorted_articles
+from django.shortcuts import render
 
 
 
@@ -13,9 +14,9 @@ def about_view(request):
 def home_view(request):
     return HttpResponse("Here will be blog structure ")
 
-def article_detail_view(request, article_title):
+def article_detail_view(request, article_id):
     try:
-        cur_article = get_object_or_404(Article, title=article_title)
+        cur_article = get_object_or_404(Article, id=article_id)
         comments = Comment.objects.filter(article=cur_article)
 
         article_data = f'TITLE: {cur_article.title}\n\nCONTENT: {cur_article.content}\n\nCOMMENTS:\n'
