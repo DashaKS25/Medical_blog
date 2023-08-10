@@ -14,26 +14,29 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
+
 from django.contrib import admin
-from django.urls import path, include, re_path
-from .import views
+from django.urls import path, re_path
+
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home_view),
     path('about/', views.about_view),
     path('create/', views.create_form_article),
+    path('list/', views.article_list),
 
-    path('<article>/comment/', views.article_comment),
-    path('<article>/update/', views.update_article),
-    path('<article>/delete/', views.delete_article),
+    path('<int:article_id>/comment/', views.article_comment),
+    path('<int:article_id>/update/', views.update_article),
+    path('<int:article_id>/delete/', views.delete_article),
 
     path('topics/', views.topics_view),
-    path('topics/<topic>/subscribe/', views.topic_subscribe),
-    path('topics/<topic>/unsubscribe/', views.topic_unsubscribe),
+    path('topics/<str:topic>/subscribe/', views.topic_subscribe),
+    path('topics/<str:topic>/unsubscribe/', views.topic_unsubscribe),
 
-    path('profile/<str:username>/', views.profile_username),
+    path('preferred_articles/<int:user_id>/', views.preferred_articles, name='preferred_articles'),
+    path('profile/<str:username>/', views.user_profile, name='user_profile'),
     path('set-password/', views.set_password),
     path('set-userdata/', views.set_userdata),
     path('deactivate/', views.deactivate_profile),
@@ -42,5 +45,6 @@ urlpatterns = [
     path('logout/', views.logout_profile),
 
     re_path(r'archive\/\d{4}\/[01]?\d{1}\/', views.regex),
-    path('<article>/', views.article_detail_view),
+
+    path('<int:article_id>/', views.article_detail_view, name='article_detail_view'),
 ]
