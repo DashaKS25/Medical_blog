@@ -46,5 +46,5 @@ urlpatterns = [
 
     re_path(r'archive\/\d{4}\/[01]?\d{1}\/', views.regex),
 
-    path('<int:article_id>/', views.article_detail_view, name= 'article_detail_view'),
+    path('<int:article_id>/', views.article_detail_view, name='article_detail_view'),
 ]
