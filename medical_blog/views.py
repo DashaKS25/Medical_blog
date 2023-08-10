@@ -9,10 +9,10 @@ from medapp.services import get_sorted_articles
 def about_view(request):
     return render(request, 'about.html')
 
-
 def home_view(request):
-    return HttpResponse("Here will be blog structure ")
-
+    all_articles = Article.objects.all()  # Отримати всі статті з бази даних
+    context = {'all_articles': all_articles}
+    return render(request, 'home.html', context)
 
 def article_detail_view(request, article_id):
     try:
@@ -29,33 +29,30 @@ def article_detail_view(request, article_id):
         raise Http404('There is no such article.')
 
 
-def article_comment(request, article):
+def article_comment(request, article_id):
     try:
-        Article.objects.get(title=article)  # Check if the article exists
-        return HttpResponse(f"Comment to article - {article}")
+        article = get_object_or_404(Article, id=article_id)  # Get the article by its id
+        return HttpResponse(f"Comment to article - {article.title}")
     except Article.DoesNotExist:
         raise Http404('There is no such article.')
-
 
 def create_form_article(request):
     return HttpResponse("Block_1,Block_2")
 
 
-def update_article(request, article):
+def update_article(request, article_id):
     try:
-        Article.objects.get(title=article)  # Check if the article exists
-        return HttpResponse(f"Update to article - {article}")
+        article = get_object_or_404(Article, id=article_id)  # Get the article by its id
+        return HttpResponse(f"Update to article - {article.title}")
     except Article.DoesNotExist:
         raise Http404('There is no such article.')
 
-
-def delete_article(request, article):
+def delete_article(request, article_id):
     try:
-        Article.objects.get(title=article)  # Check if the article exists
-        return HttpResponse(f"Delete to article - {article}")
+        article = get_object_or_404(Article, id=article_id)  # Get the article by its id
+        return HttpResponse(f"Delete to article - {article.title}")
     except Article.DoesNotExist:
         raise Http404('There is no such article.')
-
 
 def topics_view(request):
     return HttpResponse("My topics")

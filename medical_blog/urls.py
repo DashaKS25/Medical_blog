@@ -27,9 +27,9 @@ urlpatterns = [
     path('create/', views.create_form_article),
     path('list/', views.article_list),
 
-    path('<str:article>/comment/', views.article_comment),
-    path('<str:article>/update/', views.update_article),
-    path('<str:article>/delete/', views.delete_article),
+    path('<int:article_id>/comment/', views.article_comment),
+    path('<int:article_id>/update/', views.update_article),
+    path('<int:article_id>/delete/', views.delete_article),
 
     path('topics/', views.topics_view),
     path('topics/<str:topic>/subscribe/', views.topic_subscribe),
@@ -46,5 +46,5 @@ urlpatterns = [
 
     re_path(r'archive\/\d{4}\/[01]?\d{1}\/', views.regex),
 
-    path('<int:article_id>/', views.article_detail_view),
+    path('<int:article_id>/', views.article_detail_view, name= 'article_detail_view'),
 ]
