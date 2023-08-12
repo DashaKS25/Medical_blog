@@ -1,8 +1,11 @@
 from django.http import HttpRequest
 from django.http import HttpResponse, Http404
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render
-from medapp.models import Article, Comment, UserModel
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from medapp.forms import ArticleForm
+from medapp.models import Article, Comment, Topic, UserModel
 from medapp.services import get_sorted_articles
 
 
@@ -39,36 +42,75 @@ def article_comment(request, article_id):
         raise Http404('There is no such article.')
 
 
-def create_form_article(request):
-    return HttpResponse("Block_1,Block_2")
+def create_article(request: HttpRequest) -> HttpResponse:
+    if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.author = request.user
+            article.save()
+            return HttpResponseRedirect(reverse('home'))
+    else:
+        form = ArticleForm()
+
+    topics = Topic.objects.all()
+    topics_to_ctx = []
+    for index, topic in enumerate(topics):
+        cur_topic = {'option_value': index + 1, 'topic': topic}
+        topics_to_ctx.append(cur_topic)
+    ctx = {
+        'form': form,
+        'topics_list': topics_to_ctx,
+        'topics': Topic.objects.all(),
+    }
+    return render(request, 'create_article.html', ctx)
 
 
 def update_article(request, article_id):
-    try:
-        article = get_object_or_404(Article, id=article_id)  # Get the article by its id
-        return HttpResponse(f"Update to article - {article.title}")
-    except Article.DoesNotExist:
-        raise Http404('There is no such article.')
+    article = get_object_or_404(Article, pk=article_id)
+    if request.method == 'POST':
+        article.title = request.POST['title']
+        article.content = request.POST['content']
+        article.save()
+        return redirect('article_list')
+
+    return render(request, 'article_update.html', {'article': article})
 
 
 def delete_article(request, article_id):
+    article = get_object_or_404(Article, pk=article_id)
+    if request.method == 'POST':
+        article.delete()
+        return redirect('article_list')
+
+    return render(request, 'article_delete.html', {'article': article})
+
+
+def topics_list_view(request):
+    topics = Topic.objects.all()
+
+    return render(request, 'topics_list.html', {'topics': topics})
+
+
+def topics_view(request: HttpRequest, topic_title: str):
     try:
-        article = get_object_or_404(Article, id=article_id)  # Get the article by its id
-        return HttpResponse(f"Delete to article - {article.title}")
-    except Article.DoesNotExist:
-        raise Http404('There is no such article.')
+        ctx = {
+            'topic': Topic.objects.get(title=topic_title),
+            'articles': Article.objects.filter(topics__title=topic_title)
+        }
+        return render(request, 'topics.html', ctx)
+    except Topic.DoesNotExist:
+        raise Http404('Topic with this title does not exist.')
 
 
-def topics_view(request):
-    return HttpResponse("My topics")
+def topic_subscribe(request, topic_title):
+    topic = Topic.objects.get(title=topic_title)
+    return render(request, 'subscribe.html', {'topic': topic})
 
 
-def topic_subscribe(request: HttpRequest, topic: str) -> HttpResponse:
-    return HttpResponse(f"Subscribe topic - {topic}")
-
-
-def topic_unsubscribe(request: HttpRequest, topic: str) -> HttpResponse:
-    return HttpResponse(f"Unsubscribe topic - {topic}")
+def topic_unsubscribe(request, topic_title):
+    topic = Topic.objects.get(title=topic_title)
+    return render(request, 'unsubscribe.html', {'topic': topic})
 
 
 def set_password(request):
@@ -84,11 +126,11 @@ def deactivate_profile(request):
 
 
 def register_profile(request):
-    return HttpResponse("Register your profile")
+    return render(request, 'register.html')
 
 
 def login_profile(request):
-    return HttpResponse("Login in")
+    return render(request, 'login.html')
 
 
 def logout_profile(request):
@@ -102,30 +144,22 @@ def regex(request):
 def article_list(request):
     try:
         articles = Article.objects.all()
-        article_data = ""
         for article in articles:
-            article_data += f"Title: {article.title}\nContent: {article.content}\n\nComments:\n"
-            comments = Comment.objects.filter(article=article)
-            for comment in comments:
-                article_data += f"- {comment.message}\n"
-
-            article_data += "\n"
-
-        return HttpResponse(article_data, content_type='text/plain')
-
+            article.comments = Comment.objects.filter(article=article)
+        return render(request, 'article_list.html', {'articles': articles})
     except Article.DoesNotExist:
         raise Http404('There is no such article.')
 
 
 def user_profile(request, username):
-    try:
-        cur_user = UserModel.objects.get(username=username)
-        user_data = f"Username: {cur_user.username}\nEmail: {cur_user.email}\n\nArticles:\n"
-        articles = Article.objects.filter(author=cur_user)
-        user_data += '\n'.join(f"- {article.title}" for article in articles)
-        return HttpResponse(user_data, content_type='text/plain')
-    except UserModel.DoesNotExist:
-        raise Http404('There is no such user.')
+    user = get_object_or_404(UserModel, username=username)
+    articles = Article.objects.filter(author=user)
+    return render(request, 'user_profile.html', {'user': user, 'articles': articles})
+
+
+def user_profiles_list(request):
+    users = UserModel.objects.all()
+    return render(request, 'user_profiles_list.html', {'users': users})
 
 
 def preferred_articles(request, user_id):

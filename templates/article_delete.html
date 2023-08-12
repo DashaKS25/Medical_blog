@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Article{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Delete Article</h2>
+        <p>Are you sure you want to delete the article "{{ article.title }}"?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger" style="background-color: #333; color: white; border-color: black">Delete</button>
+            <a href="{% url 'article_list' %}" class="btn btn-secondary ml-2" style="background-color: #333; color: white; border-color: black">Cancel</a>
+        </form>
+    </div>
+{% endblock %}

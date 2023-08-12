@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Article List{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Article List</h2>
+        <div class="row">
+            {% for article in articles %}
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ article.title }}</h3>
+                            <p class="card-text"><strong>Author:</strong> {{ article.author }}</p>
+                            <p class="card-text"><strong>Created:</strong> {{ article.created_at|date:"F d, Y" }}</p>
+                            <p class="card-text">{{ article.content }}</p>
+                            <a href="{% url 'update_article' article.id %}" class="btn btn-primary" style="background-color: #333; color: white; border-color: black">Update</a>
+                            <a href="{% url 'delete_article' article.id %}" class="btn btn-danger ml-2" style="background-color: #333; color: white; border-color: black" >Delete</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+

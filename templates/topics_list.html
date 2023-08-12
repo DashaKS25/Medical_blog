@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load context_processors %}
+{% get_topics as topics %}
+{% block title %}Topics | Medical Blog{% endblock %}
+
+{% block content %}
+    <section class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h2 class="text-center my-4"><em>Topics</em></h2>
+                <ul class="list-group">
+                    {% for topic in topics %}
+                        <li class="list-group-item">
+                            <a href="{% url 'topic' topic_title=topic.title %}" class="text-decoration-none">
+                                <span class="bg-white bg-opacity-75 p-2 rounded">
+                                    <em class="text-black">{{ topic.title }}</em>
+                                </span>
+                            </a>
+                            {% if user.is_authenticated %}
+                                {% if topic in user.subscriptions.all %}
+                                <a href="{% url 'topic_unsubscribe' topic_title=topic.title %}" class="btn btn-danger btn-sm ml-2">Unsubscribe</a>
+                                {% else %}
+                                <a href="{% url 'topic_subscribe' topic_title=topic.title %}" class="btn btn-primary btn-sm ml-2">Subscribe</a>
+                                {% endif %}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+{% endblock %}

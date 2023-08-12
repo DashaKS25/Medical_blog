@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Home | Medical Blog{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            {% for article in all_articles %}
+            <div class="col-md-4">
+                <div class="content-block">
+                    <h4><em>{{ article.title }}</em></h4>
+                    <p><em>{{ article.content|truncatewords:30 }}</em></p>
+                    <p><em><strong>Author:</strong> {{ article.author.username }}</em></p>
+                    <a href="{% url 'article_detail_view' article_id=article.id %}" class="btn btn-primary" style="background-color: #333; color: white; border-color: black;"><em>Read More</em></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

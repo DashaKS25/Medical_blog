@@ -22,26 +22,28 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home_view),
+    path('', views.home_view, name='home'),
+    path('create/', views.create_article, name='create_article'),
     path('about/', views.about_view),
-    path('create/', views.create_form_article),
-    path('list/', views.article_list),
+    path('list/', views.article_list, name='article_list'),
 
     path('<int:article_id>/comment/', views.article_comment),
-    path('<int:article_id>/update/', views.update_article),
-    path('<int:article_id>/delete/', views.delete_article),
+    path('<int:article_id>/update/', views.update_article, name='update_article'),
+    path('<int:article_id>/delete/', views.delete_article, name='delete_article'),
 
-    path('topics/', views.topics_view),
-    path('topics/<str:topic>/subscribe/', views.topic_subscribe),
-    path('topics/<str:topic>/unsubscribe/', views.topic_unsubscribe),
+    path('topics/', views.topics_list_view, name='topics_list'),
+    path('topics/<str:topic_title>/', views.topics_view, name='topic'),
+    path('topics/<str:topic_title>/subscribe/', views.topic_subscribe, name='topic_subscribe'),
+    path('topics/<str:topic_title>/unsubscribe/', views.topic_unsubscribe, name='topic_unsubscribe'),
 
+    path('users/', views.user_profiles_list, name='user_profiles_list'),
     path('preferred_articles/<int:user_id>/', views.preferred_articles, name='preferred_articles'),
     path('profile/<str:username>/', views.user_profile, name='user_profile'),
     path('set-password/', views.set_password),
     path('set-userdata/', views.set_userdata),
     path('deactivate/', views.deactivate_profile),
-    path('register/', views.register_profile),
-    path('login/', views.login_profile),
+    path('register/', views.register_profile, name='register'),
+    path('login/', views.login_profile, name='login'),
     path('logout/', views.logout_profile),
 
     re_path(r'archive\/\d{4}\/[01]?\d{1}\/', views.regex),
