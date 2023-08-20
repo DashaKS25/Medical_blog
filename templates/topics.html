@@ -1,9 +1,7 @@
 #Тут по тайтлу коли ми нажимаємо повинна відображатись інформація про статтю 
 {% extends 'base.html' %}
-{% load context_processors %}
-{% get_topics as topics %}
 
-{% block title %}Topics | Medical Blog{% endblock %}
+{% block title %}Topics | {{ block.super }}{% endblock %}
 
 {% block content %}
     <div class="container">
@@ -11,7 +9,7 @@
             <div class="col-md-8 offset-md-2">
                 <h2>Topics</h2>
                 <ul>
-                    {% for topic in topics %}
+                    {% for topic in all_topics %}
                     <a href="{% url 'topic' topic_title=topic.title %}">{{ topic.title }}</a>
                     {% endfor %}
                 </ul>

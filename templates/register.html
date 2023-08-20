@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
-{% block title %}Register | Medical Blog{% endblock %}
+
+{% block title %}Register | {{ block.super }}{% endblock %}
 
 {% block content %}
     <div class="container">
@@ -14,20 +15,31 @@
                         <form action="" method="post">
                             {% csrf_token %}
                             <div class="mb-3">
+                                {{ form.username }}
                                 <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" required>
+                                <!-- <input type="text" class="form-control" id="username" name="username" required> -->
+                                <label for='username'>{{  form.username.lable }}</label>
+                                {% if form.username.errors %}
+                                    <div class="text-danger">{{ form.username.errors }}</div>
+                                {% endif %}
                             </div>
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
+                                {{ form.email }}
+                                <label for="email" class="form-label">{{ form.email.label }}</labe>
+                                <div>{{ form.email.errors }}</div>
+                                <!-- <input type="email" class="form-control" id="email" name="email" required> -->
                             </div>
                             <div class="mb-3">
-                                <label for="password1" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password1" name="password1" required>
+                                {{ form.password }}
+                                <label for="password1" class="form-label">{{ form.password.label }}</label>
+                                <div>{{ form.password.errors }}</div>
+                                <!-- <input type="password" class="form-control" id="password1" name="password1" required> -->
                             </div>
                             <div class="mb-3">
-                                <label for="password2" class="form-label">Confirm Password</label>
-                                <input type="password" class="form-control" id="password2" name="password2" required>
+                                {{ form.confirm_password }}
+                                <label for="password2" class="form-label">{{ form.confirm_password.label }}</label>
+                                <div>{{ form.confirm_password.errors }}</div>
+                                <!-- <input type="password" class="form-control" id="password2" name="password2" required> -->
                             </div>
                             <div class="d-grid gap-2">
                                 <button class="w-100 btn btn-lg btn-outline-dark" type="submit">Register</button>

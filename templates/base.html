@@ -1,5 +1,5 @@
-{% load context_processors %}
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -140,27 +140,44 @@ footer {
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/">Home</a>
                 </li>
+                {% if user.is_authenticated %}
+                {% if user.is_staff %}  <!-- Check if the user is an admin -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/">Admin Page</a>
+                </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="/about/">About</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/list/">Articles list</a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="/register/">Register</a>
+                    <a class="nav-link" href="/logout/">Logout</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login/">Login In</a>
-                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/create/">Create article</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/topics/">Topics</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/users/">User profile</a>
+                </li>  
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/register/">Register</a>
                 </li>
+
+                <li class="nav-item">
+                        <a class="nav-link" href="/login/">Login In</a>
+                </li>    
+                {% endif %}
                 <!-- Add more navigation links here -->
             </ul>
         </nav>

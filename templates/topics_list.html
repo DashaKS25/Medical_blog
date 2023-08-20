@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
-{% load context_processors %}
-{% get_topics as topics %}
-{% block title %}Topics | Medical Blog{% endblock %}
+
+{% block title %}About | {{ block.super }}{% endblock %}
 
 {% block content %}
     <section class="container">
@@ -9,7 +8,7 @@
             <div class="col-md-8 offset-md-2">
                 <h2 class="text-center my-4"><em>Topics</em></h2>
                 <ul class="list-group">
-                    {% for topic in topics %}
+                    {% for topic in all_topics %}
                         <li class="list-group-item">
                             <a href="{% url 'topic' topic_title=topic.title %}" class="text-decoration-none">
                                 <span class="bg-white bg-opacity-75 p-2 rounded">

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Article List{% endblock %}
+{% block title %}Article List | {{ block.super }}{% endblock %}
 
 {% block content %}
     <div class="container mt-5">
@@ -14,8 +14,25 @@
                             <p class="card-text"><strong>Author:</strong> {{ article.author }}</p>
                             <p class="card-text"><strong>Created:</strong> {{ article.created_at|date:"F d, Y" }}</p>
                             <p class="card-text">{{ article.content }}</p>
-                            <a href="{% url 'update_article' article.id %}" class="btn btn-primary" style="background-color: #333; color: white; border-color: black">Update</a>
-                            <a href="{% url 'delete_article' article.id %}" class="btn btn-danger ml-2" style="background-color: #333; color: white; border-color: black" >Delete</a>
+                            <h4>Comments:</h4>
+                            <ul>
+                            {% for comment in article.comment_set.all %}
+                                <li>{{ comment.author }}: {{ comment.message }}</li>
+                            {% endfor %}
+                            </ul>
+                            <form method="post" action="{% url 'add_comment' article.id %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="message" >Add a Comment:</label>
+                                    <textarea class="form-control" id="message" name="message" rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm" style="background-color: #333; color: white; border-color: black">Add Comment</button>
+                            </form>
+                            {% if message %}
+                                <p>{{ message }}</p>
+                            {% endif %}
+                            <a href="{% url 'update_article' article.id %}" class="btn btn-primary btn-sm" style="background-color: #333; color: white; border-color: black">Update</a>
+                            <a href="{% url 'delete_article' article.id %}" class="btn btn-danger ml-2 btn-sm" style="background-color: #333; color: white; border-color: black" >Delete</a>
                         </div>
                     </div>
                 </div>
