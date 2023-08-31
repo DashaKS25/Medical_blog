@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}User Profiles | {{ block.super }}{% endblock %}
+
+{% block content %}
+    <section class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h2 class="text-center my-4"><em>User Profiles</em></h2>
+                <ul class="list-group">
+                    {% for user in users %}
+                        <li class="list-group-item">
+                            <a href="{% url 'user_profile' user.pk user.username %}" class="text-decoration-none">
+                                <span class="bg-white bg-opacity-75 p-2 rounded">
+                                    <em class="text-black">{{ user.username }}</em>
+                                </span>
+                            </a>
+                            <a href="{% url 'set_password' %}?user_id={{ user.id }}" class="btn btn-secondary btn-sm float-end">
+                                Set Password
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
